@@ -1,6 +1,13 @@
 const path = require('path');
-// const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const webpack = require('webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyWepackPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+const paths = {
+  src: path.join(__dirname, './src'),
+  dist: path.join(__dirname, './dist')
+}
 
 module.exports = {
   mode: "development",
@@ -16,7 +23,10 @@ module.exports = {
       {
         test: /\.scss$/,
         use: [
-          "style-loader" , // creates style nodes from JS strings
+          "style-loader" ,
+          {
+            loader: MiniCssExtractPlugin.loader,
+          },
           "css-loader", // translates CSS into CommonJS
           "sass-loader" // compiles Sass to CSS, using Node Sass by default
         ],
@@ -36,14 +46,35 @@ module.exports = {
             presets: ['@babel/preset-env']
           }
         }
-      }
+      },
+      {
+        test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]'
+        }
+      }, 
     ]
   },
   devServer: {
     overlay: true,
+    contentBase: paths.dist,
     hot: true
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'style/[name].css',
+      chunkFilename: '[id].css',
+    }),
+    new HtmlWebpackPlugin({
+      template: 'index.html',
+      filename: './index.html',
+      inject: true
+    }),
+    new CopyWepackPlugin([
+      { from: `${paths.src}/img`, to: `${paths.dist}/img` },
+      { from: `${paths.src}/fonts`, to: `${paths.dist}/fonts`}
+    ])
   ]
 }
