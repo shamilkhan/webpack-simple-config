@@ -11,13 +11,28 @@ const paths = {
 
 module.exports = {
   mode: "development",
-  entry: './src/index.js',
+  entry: {
+    app: './src/index.js',
+    second: './src/second_page.js'
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    publicPath: '/dist/',
-    filename: 'index.js'
+    publicPath: '/',
+    filename: 'js/[name].[hash].js'
   },
   devtool: 'inline-source-map',
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          name: 'vendors',
+          test: /node_modules/,
+          chunks: 'all',
+          enforce: true
+        }
+      }
+    }
+  },
   module: {
     rules: [
       {
@@ -64,7 +79,7 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new MiniCssExtractPlugin({
-      filename: 'style/[name].css',
+      filename: 'style/[name].[hash].css',
       chunkFilename: '[id].css',
     }),
     new HtmlWebpackPlugin({
