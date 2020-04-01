@@ -1,33 +1,33 @@
-const path = require('path');
-const webpack = require('webpack');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CopyWepackPlugin = require('copy-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require("path");
+const webpack = require("webpack");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CopyWepackPlugin = require("copy-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const paths = {
-  src: path.join(__dirname, './src'),
-  dist: path.join(__dirname, './dist')
-}
+  src: path.join(__dirname, "./src"),
+  dist: path.join(__dirname, "./dist")
+};
 
 module.exports = {
   mode: "development",
   entry: {
-    app: './src/index.js',
-    second: './src/second_page.js'
+    app: "./src/index.js",
+    second: "./src/second_page.js"
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    publicPath: '/',
-    filename: 'js/[name].[hash].js'
+    path: path.resolve(__dirname, "dist"),
+    publicPath: "/",
+    filename: "js/[name].[hash].js"
   },
-  devtool: 'inline-source-map',
+  devtool: "inline-source-map",
   optimization: {
     splitChunks: {
       cacheGroups: {
         vendor: {
-          name: 'vendors',
+          name: "vendors",
           test: /node_modules/,
-          chunks: 'all',
+          chunks: "all",
           enforce: true
         }
       }
@@ -38,9 +38,9 @@ module.exports = {
       {
         test: /\.scss$/,
         use: [
-          "style-loader" ,
+          "style-loader",
           {
-            loader: MiniCssExtractPlugin.loader,
+            loader: MiniCssExtractPlugin.loader
           },
           "css-loader", // translates CSS into CommonJS
           "sass-loader" // compiles Sass to CSS, using Node Sass by default
@@ -49,26 +49,32 @@ module.exports = {
       },
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
+        use: "ts-loader",
         exclude: /node_modules/
+      },
+      {
+        enforce: "pre",
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: "eslint-loader"
       },
       {
         test: /\.js$/,
         exclude: /(node_modules)s/,
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
-            presets: ['@babel/preset-env']
+            presets: ["@babel/preset-env"]
           }
         }
       },
       {
         test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file-loader',
+        loader: "file-loader",
         options: {
-          name: '[name].[ext]'
+          name: "[name].[ext]"
         }
-      }, 
+      }
     ]
   },
   devServer: {
@@ -79,17 +85,17 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new MiniCssExtractPlugin({
-      filename: 'style/[name].[hash].css',
-      chunkFilename: '[id].css',
+      filename: "style/[name].[hash].css",
+      chunkFilename: "[id].css"
     }),
     new HtmlWebpackPlugin({
-      template: 'index.html',
-      filename: './index.html',
+      template: "index.html",
+      filename: "./index.html",
       inject: true
     }),
     new CopyWepackPlugin([
       { from: `${paths.src}/img`, to: `${paths.dist}/img` },
-      { from: `${paths.src}/fonts`, to: `${paths.dist}/fonts`}
+      { from: `${paths.src}/fonts`, to: `${paths.dist}/fonts` }
     ])
   ]
-}
+};
