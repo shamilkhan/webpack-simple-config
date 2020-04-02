@@ -3,6 +3,7 @@ const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWepackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const paths = {
   src: path.join(__dirname, "./src"),
@@ -22,6 +23,7 @@ module.exports = {
   },
   devtool: "inline-source-map",
   optimization: {
+    runtimeChunk: true,
     splitChunks: {
       cacheGroups: {
         vendor: {
@@ -52,19 +54,22 @@ module.exports = {
         use: "ts-loader",
         exclude: /node_modules/
       },
+      // {
+      //   enforce: "pre",
+      //   test: /\.js$/,
+      //   exclude: /node_modules/,
+      //   loader: "eslint-loader"
+      // },
       {
-        enforce: "pre",
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: "eslint-loader"
-      },
-      {
-        test: /\.js$/,
-        exclude: /(node_modules)s/,
         use: {
           loader: "babel-loader",
           options: {
-            presets: ["@babel/preset-env"]
+            presets: [
+              "@babel/preset-env",
+              "@babel/preset-react",
+            ]
           }
         }
       },
@@ -96,6 +101,7 @@ module.exports = {
     new CopyWepackPlugin([
       { from: `${paths.src}/img`, to: `${paths.dist}/img` },
       { from: `${paths.src}/fonts`, to: `${paths.dist}/fonts` }
-    ])
+    ]),
+    new CleanWebpackPlugin()
   ]
 };

@@ -1,9 +1,6 @@
-// import './styles/index.scss';
-// import moment from 'moment';
-//some comments
-// sconsole.log(moment().format('MMMM Do YYYY, h:mm:ss a'))
+import React from 'react';
+import ReactDOM from 'react-dom';
 
+const App = () => <div>test</div>;
 
-const t = 1231;
-
-alert("test");
+ReactDOM.render(document.getElementById("root"), <App />);
